@@ -1,0 +1,9 @@
+{
+	"name": "dfcdcdataengletrus",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "60a27f17-540b-44f4-ab18-9ffc67ca4f37",
+		"tenantId": "cf36141c-ddd7-45a7-b073-111f66d0b30c"
+	}
+}
