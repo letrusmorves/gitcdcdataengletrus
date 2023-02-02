@@ -6,10 +6,10 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"ds_container": {
+			"ds_name_table": {
 				"type": "string"
 			},
-			"ds_directory": {
+			"ds_schema_table": {
 				"type": "string"
 			}
 		},
