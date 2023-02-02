@@ -53,6 +53,20 @@
 				]
 			}
 		],
+		"parameters": {
+			"schema_par": {
+				"type": "string"
+			},
+			"table_name_par": {
+				"type": "string"
+			},
+			"container_par": {
+				"type": "string"
+			},
+			"directory_par": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
