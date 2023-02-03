@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "pip_copydata_sqldb_parquet",
 	"properties": {
 		"activities": [
 			{
