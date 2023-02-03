@@ -3,65 +3,49 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data2",
-				"type": "Copy",
+				"name": "If Condition1",
+				"type": "IfCondition",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select * from @{pipeline().parameters.schema_par}.@{pipeline().parameters.table_name_par} where ModifiedDate > '@{variables('last_modified')}' and ModifiedDate <= '@{variables('max_valor_escrito')}'",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+					"expression": {
+						"value": "@equals(variables('last_modified'), variables('max_valor_escrito'))",
+						"type": "Expression"
 					},
-					"sink": {
-						"type": "ParquetSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "ParquetWriteSettings"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "AzureSqlTable",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "Parquet",
-						"type": "DatasetReference",
-						"parameters": {
-							"ds_container": {
-								"value": "@pipeline().parameters.container_par",
-								"type": "Expression"
+					"ifFalseActivities": [
+						{
+							"name": "Copy data3",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
 							},
-							"ds_directory": {
-								"value": "@pipeline().parameters.directory_par",
-								"type": "Expression"
-							}
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureSqlTable",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_name_table": "Product",
+										"ds_schema_table": "SalesLT"
+									}
+								}
+							]
 						}
-					}
-				]
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -80,6 +64,14 @@
 			"schema_par": {
 				"type": "string",
 				"defaultValue": "SalesLT"
+			}
+		},
+		"variables": {
+			"last_modified": {
+				"type": "String"
+			},
+			"max_valor_escrito": {
+				"type": "String"
 			}
 		},
 		"annotations": []
