@@ -7,10 +7,12 @@
 		},
 		"parameters": {
 			"ds_container": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "landing"
 			},
 			"ds_directory": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "sales"
 			}
 		},
 		"annotations": [],

@@ -27,13 +27,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "AzureSqlSource",
-									"sqlReaderQuery": {
-										"value": "select * from @{pipeline().parameters.schema_par}.@{pipeline().parameters.table_name_par} where ModifiedDate > '@{variables('last_modified')}' and ModifiedDate <= '@{variables('max_valor_escrito')}'",
-										"type": "Expression"
-									},
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
+									"type": "ParquetSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
 								},
 								"sink": {
 									"type": "AzureSqlSink",
@@ -52,12 +51,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "AzureSqlTable",
-									"type": "DatasetReference",
-									"parameters": {
-										"ds_name_table": "Product",
-										"ds_schema_table": "SalesLT"
-									}
+									"referenceName": "Parquet_gen",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
