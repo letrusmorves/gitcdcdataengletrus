@@ -466,7 +466,6 @@
 						"referenceName": "AzureSqlTable_gen",
 						"type": "DatasetReference",
 						"parameters": {
-							"ds_name_table": "Product",
 							"ds_schema_table": "SalesLT"
 						}
 					}
@@ -498,7 +497,6 @@
 						"referenceName": "AzureSqlTable_gen",
 						"type": "DatasetReference",
 						"parameters": {
-							"ds_name_table": "Product",
 							"ds_schema_table": "SalesLT"
 						}
 					}
@@ -508,7 +506,7 @@
 		"parameters": {
 			"table_name_par": {
 				"type": "string",
-				"defaultValue": "Product"
+				"defaultValue": "Address"
 			},
 			"container_par": {
 				"type": "string",

@@ -7,7 +7,7 @@
 		},
 		"parameters": {
 			"ds_name_table": {
-				"type": "string"
+				"type": "array"
 			},
 			"ds_schema_table": {
 				"type": "string"
