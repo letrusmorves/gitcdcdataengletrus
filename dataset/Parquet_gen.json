@@ -12,7 +12,7 @@
 			},
 			"ds_directory": {
 				"type": "string",
-				"defaultValue": "sales"
+				"defaultValue": "adventureworks/incremental"
 			}
 		},
 		"annotations": [],
