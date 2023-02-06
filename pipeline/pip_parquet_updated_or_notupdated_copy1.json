@@ -11,6 +11,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -502,6 +508,35 @@
 							"ds_schema_table": "SalesLT"
 						}
 					}
+				}
+			},
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "AzureSqlTable_gen",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_name_table": {
+								"value": "@pipeline().parameters.table_name_par",
+								"type": "Expression"
+							},
+							"ds_schema_table": "SalesLT"
+						}
+					},
+					"fieldList": [
+						"structure"
+					]
 				}
 			}
 		],
