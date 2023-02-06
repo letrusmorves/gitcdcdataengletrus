@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(variables('Last_Modified'), variables('max_valor_escrito'))",
+						"value": "@equals(variables('last_modified'), variables('max_valor_escrito'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
