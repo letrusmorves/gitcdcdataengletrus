@@ -34,12 +34,9 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "ParquetSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									}
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"sink": {
 									"type": "AzureSqlSink",
@@ -58,11 +55,11 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "Parquet_gen",
+									"referenceName": "AzureSqlTable_gen",
 									"type": "DatasetReference",
 									"parameters": {
-										"ds_container": "landing",
-										"ds_directory": "sales"
+										"ds_name_table": "Product",
+										"ds_schema_table": "SalesLT"
 									}
 								}
 							],
