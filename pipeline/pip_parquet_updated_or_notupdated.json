@@ -3,9 +3,16 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "If Condition1",
+				"name": "Update Watermark",
 				"type": "IfCondition",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -52,7 +59,11 @@
 							"inputs": [
 								{
 									"referenceName": "Parquet_gen",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_container": "landing",
+										"ds_directory": "sales"
+									}
 								}
 							],
 							"outputs": [
@@ -71,8 +82,196 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Script1",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Copy data3",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "NonQuery",
+										"text": {
+											"value": "update dbo.watermark set Last_Modified = '@{variables('max_valor_escrito')}'where table_name = '@{pipeline().parameters.table_name_par}'",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "POST",
+								"body": {
+									"RUN_ID": "@{pipeline().RunId}",
+									"TABLE_NAME": "@{pipeline().parameters.table_name_par}",
+									"TIMESTAMP": "@{utcnow()}",
+									"ERRORDESCRIPTION": "NÃO EXISTEM NOVOS REGISTROS PARA ESTA TABELA.",
+									"TO": "letmorves@gmail.com",
+									"SUBJECT": "INGESTÃO DIÁRIA"
+								}
+							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "SetLastModified",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetMaxLastModified",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "SetLastModified",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "LastModified",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "last_modified",
+					"value": {
+						"value": "@activity('LastModified').output.firstRow.last_modified",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SetMaxLastModified",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "MaxLastModified",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "max_valor_escrito",
+					"value": {
+						"value": "@activity('MaxLastModified').output.firstRow.ModifiedDate",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "LastModified",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select * from dbo.watermark where table_name = '@{pipeline().parameters.table_name_par}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable_gen",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_name_table": "Product",
+							"ds_schema_table": "SalesLT"
+						}
+					}
+				}
+			},
+			{
+				"name": "MaxLastModified",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT max(ModifiedDate) as ModifiedDate  FROM @{pipeline().parameters.schema_par}.@{pipeline().parameters.table_name_par}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable_gen",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_name_table": "Product",
+							"ds_schema_table": "SalesLT"
+						}
+					}
 				}
 			}
 		],
