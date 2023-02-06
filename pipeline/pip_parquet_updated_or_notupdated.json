@@ -131,6 +131,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"url": "https://prod-28.eastus2.logic.azure.com:443/workflows/204c3146b0b24b45bbfa332307916149/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=q42JCMbho7W_BoVFzo-UWrPHhJNkktUKnFjSGOSNxz0",
 								"method": "POST",
 								"body": {
 									"RUN_ID": "@{pipeline().RunId}",
